@@ -1,6 +1,6 @@
 /*
-File: main.cc
-Author: Jorge Gonzalez
+File: Implementation.cpp
+Author: Mr Arthor
 Procedures:
 
 -uniform - provides a random uniform number
@@ -10,7 +10,6 @@ Procedures:
 -sstf - simulates the sstf policy
  */
 
-//libraries required for the program
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,7 +19,6 @@ Procedures:
 #include <vector>
 using namespace std;
 
-//prototype functions
 int uniform(int, int);
 int scan(int, int[], int[], int);
 int cscan(int, int[], int[], int);
@@ -159,7 +157,7 @@ int scan(int requests, int requestedTracks[], int requestedSectors[], int initia
         }
     }
 
-    for (int i = 0; i < requests; i++) //
+    for (int i = 0; i < requests; i++) 
     {
 
         seekTimes[i] = tracksTraversed[i] + sectorsTraversed[i];
@@ -224,49 +222,47 @@ int cscan(int requests, int requestedTracks[], int requestedSectors[], int initi
     vector<int> sectorsTraversed(requests);
     vector<int> seekTimes(requests);
 
-    for (int i = 0; i < size1; i++) //loop through the first tempTrack
+    for (int i = 0; i < size1; i++)
     {
         if (i != size1)
         {
-            tracksTraversed[i] = tempTrack[i + 1] - tempTrack[i]; //will capture the tracks traversed by subtracting the n+1 element by the n element
+            tracksTraversed[i] = tempTrack[i + 1] - tempTrack[i];
 
-            for (int y = 0; y < requestedSectors[i]; y++) //sectors are captured as well
+            for (int y = 0; y < requestedSectors[i]; y++) 
             {
                 sectorsTraversed[i] = requestedSectors[i];
             }
         }
     }
 
-    for (int i = 0; i < size2; i++) // loop through the second temp track
+    for (int i = 0; i < size2; i++) 
     {
         if (i != size2)
         {
-            tracksTraversed[i + size1] = tempTrack2[i + 1] - tempTrack2[i]; //will capture the tracks traversed by subtracting the n+1 element by the n element
+            tracksTraversed[i + size1] = tempTrack2[i + 1] - tempTrack2[i]; 
 
-            for (int y = 0; y < requestedSectors[i + size1]; y++) // the sectors are captured as well
-            {
+            for (int y = 0; y < requestedSectors[i + size1]; y++) {
                 sectorsTraversed[i + size1] = requestedSectors[i] + size1;
             }
         }
     }
 
-    for (int i = 0; i < requests; i++) //each seek time is calculated by track traversed + the sectors traversed
+    for (int i = 0; i < requests; i++) 
     {
         seekTimes[i] = tracksTraversed[i] + sectorsTraversed[i];
     }
 
-    //  int seekSize = seekTimes.size();
 
     long seekTimeAverage = 0;
 
-    for (int i = 0; i < requests; i++) //each seek time is summed up
+    for (int i = 0; i < requests; i++)
     {
         seekTimeAverage += seekTimes[i];
     }
 
     if (requests != 0)
     {
-        seekTimeAverage = seekTimeAverage / requests; //summed seek time is divided by the number of requests to find the average seek time
+        seekTimeAverage = seekTimeAverage / requests;
     }
     else
     {
@@ -275,69 +271,49 @@ int cscan(int requests, int requestedTracks[], int requestedSectors[], int initi
     return seekTimeAverage;
 }
 
-/*
-int fifo(int requests, int requestedTracks[], int requestedSectors[], int initialHeadLocation)
 
-Author: Jorge Gonzalez
-
-Date: 11/21/2019
-
-Description: simulates the fifo disk algorithm for first in first out, summmed seek time is averaged and returned
-
-Parameters:
-
-requests              I/P   int     number of requests
-
-requestedTracks       I/P   int[]   the requested tracks
-
-requestedSectors      I/P   int[]   the requested sectors
-
-initialHeadLocation   I/P   int     the initial starting point
- */
 int fifo(int requests, int requestedTracks[], int requestedSectors[], int initialHeadLocation)
 {
     vector<int> tempTrack(requests);
     vector<int> tracksTraversed(requests);
     vector<int> sectorsTraversed(requests);
     vector<int> seekTime(requests);
-    for (int i = 0; i < requests; i++) //the requested tracks and sectors are stored in temp arrays
-    {
+    for (int i = 0; i < requests; i++) {
         tempTrack[i] = requestedTracks[i];
         sectorsTraversed[i] = requestedSectors[i];
     }
 
-    for (int i = 0; i < requests; i++) //number of tracks traversed is calculated by if n+1 - n element is a positive number, store than number, if not then n - (n+1) is stored
+    for (int i = 0; i < requests; i++) 
     {
         if (i != requests)
         {
-            if (tempTrack[i] - (tempTrack[i + 1]) >= 0) //checks to see if the difference is positive
+            if (tempTrack[i] - (tempTrack[i + 1]) >= 0) 
             {
-                tracksTraversed[i] = tempTrack[i] - tempTrack[i + 1]; //if it is then store the tracks traversed
+                tracksTraversed[i] = tempTrack[i] - tempTrack[i + 1]; 
             }
-            else if (tempTrack[i + 1] - (tempTrack[i]) >= 0) //checks to see if the difference is positive
+            else if (tempTrack[i + 1] - (tempTrack[i]) >= 0) 
             {
-                tracksTraversed[i] = tempTrack[i + 1] - tempTrack[i]; // if it is then store the tracks traversed
+                tracksTraversed[i] = tempTrack[i + 1] - tempTrack[i]; 
             }
         }
     }
 
-    for (int i = 0; i < requests; i++) //seek time is calculated by tracks traversed + sectors traversed
+    for (int i = 0; i < requests; i++) 
     {
         seekTime[i] = tracksTraversed[i] + sectorsTraversed[i];
     }
 
-    //  int seekSize = seekTime.size();
 
     long seekTimeAverage = 0;
 
-    for (int i = 0; i < requests; i++) //each seek time is summed up
+    for (int i = 0; i < requests; i++) 
     {
         seekTimeAverage += seekTime[i];
     }
 
     if (requests != 0)
     {
-        seekTimeAverage = seekTimeAverage / requests; //average is calculated by the summed seek time / number of requests
+        seekTimeAverage = seekTimeAverage / requests; 
     }
     else
     {
@@ -346,81 +322,60 @@ int fifo(int requests, int requestedTracks[], int requestedSectors[], int initia
     return seekTimeAverage;
 }
 
-/*
-int sstf(int requests, int requestedTracks[], int requestedSectors[], int initialHeadLocation)
 
-Author: Jorge Gonzalez
-
-Date: 11/21/2019
-
-Description: simulates the sstf disk algorithm and returns the seek time average
-
-Parameters
-
-requests               I/P   int   number of requests
-
-requestedTracks        I/P   int[] the requested tracks
-
-requestedSectors       I/P   int[] the requested sectors
-
-initialHeadLocation    I/P   int   initial starting point
- */
 int sstf(int requests, int requestedTracks[], int requestedSectors[], int initialHeadLocation)
 {
     vector<int> tempTrack(requests);
     vector<int> tempSector(requests);
     int currentDifference = 2500;
     vector<int> tracksTraversed(requests);
-    for (int i = 0; i < requests; i++) //requested sectors and tracks are stored in a temp array
+    for (int i = 0; i < requests; i++) 
     {
         tempTrack[i] = requestedTracks[i];
         tempSector[i] = requestedSectors[i];
     }
 
-    for (int i = 0; i < requests; i++) //loop through the number of requests, sorting by shortest number of tracks traversed
+    for (int i = 0; i < requests; i++) 
     {
 
-        currentDifference = 2500;              //this will be the initial difference at the start of every loop
-        for (int y = i + 1; y < requests; y++) //compare each element with every other element in the array
-        {
-            if (y != requests) //checks to see if it reached the end
-            {
-                if ((tempTrack[i] - tempTrack[y]) >= 0) //checks to see if the difference between elements is positive
+        currentDifference = 2500;            
+        for (int y = i + 1; y < requests; y++) {
+            if (y != requests) {
+                if ((tempTrack[i] - tempTrack[y]) >= 0)
                 {
-                    if ((tempTrack[i] - tempTrack[y]) < currentDifference) //checks to see if the current difference is smaller than the stored difference
+                    if ((tempTrack[i] - tempTrack[y]) < currentDifference) 
                     {
-                        currentDifference = tempTrack[i] - tempTrack[y]; //if it is then store it as the new difference
+                        currentDifference = tempTrack[i] - tempTrack[y]; 
                     }
                 }
-                else if ((tempTrack[y] - tempTrack[i]) >= 0) //checks to see if the difference between elements is positive
+                else if ((tempTrack[y] - tempTrack[i]) >= 0) 
                 {
-                    if ((tempTrack[y] - tempTrack[i]) < currentDifference) //checks to see if the current difference is smaller than the stored one
+                    if ((tempTrack[y] - tempTrack[i]) < currentDifference)
                     {
-                        currentDifference = tempTrack[y] - tempTrack[i]; //if it is, then it is the new stored difference
+                        currentDifference = tempTrack[y] - tempTrack[i]; 
                     }
                 }
             }
         }
-        tracksTraversed[i] = currentDifference; //once each element has been checked, the current difference is stored into the array and restart the process
+        tracksTraversed[i] = currentDifference; 
     }
 
     vector<int> seekTime(requests);
 
     for (int i = 0; i < requests; i++)
     {
-        seekTime[i] = tracksTraversed[i] + tempSector[i]; //calculate the average seek time by adding track traverse + temp sector
+        seekTime[i] = tracksTraversed[i] + tempSector[i]; 
     }
 
     long seekTimeAverage = 0;
 
     for (int i = 0; i < requests; i++)
     {
-        seekTimeAverage += seekTime[i]; //sum each seek time
-    }
+        seekTimeAverage += seekTime[i];}
 
     if (requests != 0)
     {
-        seekTimeAverage = seekTimeAverage / requests; //calculate the avg by dividing the sum by the number of requests
+        seekTimeAverage = seekTimeAverage / requests; 
     }
     else
     {
